@@ -15,3 +15,6 @@ class UserResponse(BaseModel):
     class Config:
         from_attributes = True
 
+class JobPreference(BaseModel):
+    desired_job: str
+

@@ -57,3 +57,14 @@ def upload_documents(nin: str, passport: UploadFile = File(...), cv: UploadFile 
     db.refresh(user)
 
     return {"message": "Documents uploaded successfully", "passport_path": passport_path, "cv_path": cv_path}
+
+@app.post("/set-job-preference/{nin}", response_model=schemas.UserResponse)
+def set_job_preference(nin: str, payload: schemas.JobPreference, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.nin == nin).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="No profile found for this NIN")
+
+    user.desired_job = payload.desired_job
+    db.commit()
+    db.refresh(user)
+    return user
